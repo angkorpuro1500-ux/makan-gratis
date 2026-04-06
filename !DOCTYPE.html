@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Login Form + GIF</title>
+<title>Login + Video Fullscreen</title>
 <style>
 * {
     margin: 0;
@@ -18,8 +18,10 @@ body {
     align-items: center;
     background: linear-gradient(135deg, #d38b7f, #5c6bc0, #1a1a2e);
     flex-direction: column;
+    overflow: hidden; /* biar video full screen */
 }
 
+/* LOGIN TIDAK DIUBAH, glass effect */
 .container {
     width: 350px;
     padding: 30px;
@@ -95,30 +97,23 @@ button:active {
     box-shadow: 0 1px 0 #c0392b;
 }
 
-#gifContainer {
+/* VIDEO BACKGROUND */
+#bgVideo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     display: none;
-    margin-top: 20px;
-    transform: scale(0.5);
-    transition: transform 0.6s ease, opacity 0.6s ease;
-    opacity: 0;
-}
-
-#gifContainer.show {
-    display: block;
-    transform: scale(1);
-    opacity: 1;
-}
-
-#gifContainer iframe {
-    width: 300px;
-    height: 300px;
-    border: none;
+    z-index: -1;
 }
 </style>
 </head>
 
 <body>
 
+<!-- LOGIN -->
 <div class="container" id="loginContainer">
     <h2>WELCOME</h2>
     <div class="line"></div>
@@ -141,27 +136,40 @@ button:active {
     <button onclick="login()">LOGIN</button>
 </div>
 
-<!-- GIF container menggunakan iframe Tenor -->
-<div id="gifContainer">
-    <iframe src="https://tenor.com/embed/21672244" allowfullscreen></iframe>
-</div>
+<!-- VIDEO -->
+<video id="bgVideo" autoplay muted></video>
 
 <script>
+const videos = ["video1.mp4","video2.mp4","video3.mp4"]; // ganti dengan path videomu
+let i = 0;
+
+const video = document.getElementById("bgVideo");
+
+function playNext() {
+    video.src = videos[i];
+    video.play();
+    i = (i + 1) % videos.length;
+}
+
 function login() {
-    var user = document.getElementById('username').value;
-    var pass = document.getElementById('password').value;
+    const user = document.getElementById('username').value;
+    const pass = document.getElementById('password').value;
 
     if(user && pass) {
-        // sembunyikan form
-        var container = document.getElementById('loginContainer');
+        const container = document.getElementById('loginContainer');
         container.style.opacity = 0;
+
         setTimeout(function() {
             container.style.display = 'none';
-            
-            // tampilkan GIF dengan efek zoom
-            var gif = document.getElementById('gifContainer');
-            gif.classList.add('show');
+
+            // tampilkan video full screen
+            video.style.display = "block";
+
+            playNext();
+            video.addEventListener("ended", playNext);
         }, 500);
+    } else {
+        alert("Isi username dan password!");
     }
 }
 </script>
